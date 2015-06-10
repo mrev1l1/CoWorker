@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="CoWorkerStaff" Class="CoWorkerStaffHandlersDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="WebSettings" ConnectionString="Data Source=(LocalDB)\v11.0;AttachDbFilename=|DataDirectory|\CoWorkerStaff.mdf;Integrated Security=True;Connect Timeout=30" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="CoWorkerStaffConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Projects" Member="Projects">
+    <Type Name="Projects">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="projectInfoFolderPath" Type="System.String" DbType="NVarChar(150) NOT NULL" CanBeNull="false" />
+      <Column Name="price" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Projects_ActiveProjects" Member="ActiveProjects" ThisKey="Id" OtherKey="projectID" Type="ActiveProjects" />
+    </Type>
+  </Table>
+  <Table Name="dbo.CoWorkers" Member="CoWorkers">
+    <Type Name="CoWorkers">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="name" Type="System.String" DbType="NVarChar(45) NOT NULL" CanBeNull="false" />
+      <Column Name="phoneNumber" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="email" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="additionalInfo" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Association Name="CoWorkers_CoWorkerSpecializations" Member="CoWorkerSpecializations" ThisKey="Id" OtherKey="coWorkerID" Type="CoWorkerSpecializations" />
+      <Association Name="CoWorkers_ActiveProjects" Member="ActiveProjects" ThisKey="Id" OtherKey="coWorkerID" Type="ActiveProjects" />
+    </Type>
+  </Table>
+  <Table Name="dbo.CoWorkerSpecializations" Member="CoWorkerSpecializations">
+    <Type Name="CoWorkerSpecializations">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="categoryID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="coWorkerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="CoWorkers_CoWorkerSpecializations" Member="CoWorkers" ThisKey="coWorkerID" OtherKey="Id" Type="CoWorkers" IsForeignKey="true" />
+      <Association Name="JobCategories_CoWorkerSpecializations" Member="JobCategories" ThisKey="categoryID" OtherKey="Id" Type="JobCategories" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.JobCategories" Member="JobCategories">
+    <Type Name="JobCategories">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="categoryName" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Association Name="JobCategories_CoWorkerSpecializations" Member="CoWorkerSpecializations" ThisKey="Id" OtherKey="categoryID" Type="CoWorkerSpecializations" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ActiveProjects" Member="ActiveProjects">
+    <Type Name="ActiveProjects">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="coWorkerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="projectID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="readiness" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="CoWorkers_ActiveProjects" Member="CoWorkers" ThisKey="coWorkerID" OtherKey="Id" Type="CoWorkers" IsForeignKey="true" />
+      <Association Name="Projects_ActiveProjects" Member="Projects" ThisKey="projectID" OtherKey="Id" Type="Projects" IsForeignKey="true" />
+    </Type>
+  </Table>
+</Database>
