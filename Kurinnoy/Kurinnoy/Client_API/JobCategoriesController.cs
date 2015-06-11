@@ -15,15 +15,22 @@ namespace Kurinnoy.Client_API
         private CoWorkerStaffHandlersDataContext DbContext;
 
         // GET api/<controller>
-        public IEnumerable<JobCategories> GetJobCategories()
+        public String GetJobCategories()
         {
+            String Result="";
             DbContext = new CoWorkerStaffHandlersDataContext(ConfigurationManager.ConnectionStrings["CoWorkerStaffConnectionString"].ConnectionString);
 
             var Categories = DbContext.JobCategories;
 
             DbContext.Connection.Close();
 
-            return Categories;
+            foreach(JobCategories item in Categories)
+            {
+                Result += item.Id.ToString() + ':';
+                Result += item.categoryName + ';';
+            }
+
+            return Result;
         }
 
         //// GET api/<controller>/5
