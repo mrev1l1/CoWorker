@@ -53,16 +53,19 @@ namespace Kurinnoy.Project_handling
         {
             StreamReader FileReader = null;
 
-            FileReader = File.OpenText(@"D:\\Microsoft Visual Studio 2013\\Kurinnoy\\Kurinnoy\\App_Data\\project" + projectId + '\\' + projectId + ".txt");
+            FileReader = File.OpenText(Server.MapPath("~/App_Data/")+"project" + projectId + '\\' + projectId + ".txt");
 
             projectInformationHolder.InnerText = FileReader.ReadToEnd();
         }
 
         void ShowProjectImages(String projectId)
         {
-            Int32 ProjectRelatedJpg = new DirectoryInfo(@"D:\\Microsoft Visual Studio 2013\\Kurinnoy\\Kurinnoy\\App_Data\\project" + projectId).GetFiles("*.jpg").Length;
-            Int32 ProjectRelatedJpeg = new DirectoryInfo(@"D:\\Microsoft Visual Studio 2013\\Kurinnoy\\Kurinnoy\\App_Data\\project" + projectId).GetFiles("*.jpeg").Length;
-            Int32 ProjectRelatedPng = new DirectoryInfo(@"D:\\Microsoft Visual Studio 2013\\Kurinnoy\\Kurinnoy\\App_Data\\project" + projectId).GetFiles("*png").Length;
+            Int32 ProjectRelatedJpg = new DirectoryInfo(Server.MapPath("~/App_Data/")+"project" + projectId).GetFiles("*.jpg").Length;
+            Int32 ProjectRelatedJpeg = new DirectoryInfo(Server.MapPath("~/App_Data/") + "project" + projectId).GetFiles("*.jpeg").Length;
+            Int32 ProjectRelatedPng = new DirectoryInfo(Server.MapPath("~/App_Data/") + "project" + projectId).GetFiles("*png").Length;
+
+            if (ProjectRelatedJpeg + ProjectRelatedJpg + ProjectRelatedPng == 0)
+                return;
 
             String[] JpgImages = Directory.GetFiles(Server.MapPath("~/App_Data/project" + projectId + '/'), "*.jpg");
             String[] JpegImages = Directory.GetFiles(Server.MapPath("~/App_Data/project" + projectId + '/'), "*.jpeg");

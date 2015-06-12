@@ -45,6 +45,9 @@ namespace Kurinnoy.DataBase_Logic
     partial void InsertActiveProjects(ActiveProjects instance);
     partial void UpdateActiveProjects(ActiveProjects instance);
     partial void DeleteActiveProjects(ActiveProjects instance);
+    partial void InsertRealTimeJobOffers(RealTimeJobOffers instance);
+    partial void UpdateRealTimeJobOffers(RealTimeJobOffers instance);
+    partial void DeleteRealTimeJobOffers(RealTimeJobOffers instance);
     #endregion
 		
 		public CoWorkerStaffHandlersDataContext() : 
@@ -116,6 +119,43 @@ namespace Kurinnoy.DataBase_Logic
 				return this.GetTable<ActiveProjects>();
 			}
 		}
+		
+		public System.Data.Linq.Table<RealTimeJobOffers> RealTimeJobOffers
+		{
+			get
+			{
+				return this.GetTable<RealTimeJobOffers>();
+			}
+		}
+
+        public void FindCoWorkersForProjectByCategory(int category, int workersQuantity, int price, String additionalInfo, String clientContacts)
+        {
+            var PotentialWorkers = this.CoWorkerSpecializations.Where(Coworkers => Coworkers.categoryID.Equals(category));
+
+            Int32 WorkerNeed = workersQuantity;
+
+            foreach (var Worker in PotentialWorkers)
+            {
+                if (WorkerNeed > 0)
+                {
+                    RealTimeJobOffers NewOffer = new RealTimeJobOffers();
+
+                    NewOffer.ClientContacts = clientContacts;
+                    NewOffer.CoWorkerId = Worker.coWorkerID;
+                    NewOffer.Price = price;
+                    NewOffer.ProjectInfo = additionalInfo;
+                    NewOffer.WorkerQuantity = workersQuantity;
+                    
+                    RealTimeJobOffers.InsertOnSubmit(NewOffer);
+                    this.SubmitChanges();
+
+                    WorkerNeed--;
+                }
+                else
+                    break;
+
+            }
+        }
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Projects")]
@@ -276,6 +316,8 @@ namespace Kurinnoy.DataBase_Logic
 		
 		private EntitySet<ActiveProjects> _ActiveProjects;
 		
+		private EntitySet<RealTimeJobOffers> _RealTimeJobOffers;
+		
     #region Определения метода расширяемости
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -296,6 +338,7 @@ namespace Kurinnoy.DataBase_Logic
 		{
 			this._CoWorkerSpecializations = new EntitySet<CoWorkerSpecializations>(new Action<CoWorkerSpecializations>(this.attach_CoWorkerSpecializations), new Action<CoWorkerSpecializations>(this.detach_CoWorkerSpecializations));
 			this._ActiveProjects = new EntitySet<ActiveProjects>(new Action<ActiveProjects>(this.attach_ActiveProjects), new Action<ActiveProjects>(this.detach_ActiveProjects));
+			this._RealTimeJobOffers = new EntitySet<RealTimeJobOffers>(new Action<RealTimeJobOffers>(this.attach_RealTimeJobOffers), new Action<RealTimeJobOffers>(this.detach_RealTimeJobOffers));
 			OnCreated();
 		}
 		
@@ -425,6 +468,19 @@ namespace Kurinnoy.DataBase_Logic
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CoWorkers_RealTimeJobOffers", Storage="_RealTimeJobOffers", ThisKey="Id", OtherKey="CoWorkerId")]
+		public EntitySet<RealTimeJobOffers> RealTimeJobOffers
+		{
+			get
+			{
+				return this._RealTimeJobOffers;
+			}
+			set
+			{
+				this._RealTimeJobOffers.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -464,6 +520,18 @@ namespace Kurinnoy.DataBase_Logic
 		}
 		
 		private void detach_ActiveProjects(ActiveProjects entity)
+		{
+			this.SendPropertyChanging();
+			entity.CoWorkers = null;
+		}
+		
+		private void attach_RealTimeJobOffers(RealTimeJobOffers entity)
+		{
+			this.SendPropertyChanging();
+			entity.CoWorkers = this;
+		}
+		
+		private void detach_RealTimeJobOffers(RealTimeJobOffers entity)
 		{
 			this.SendPropertyChanging();
 			entity.CoWorkers = null;
@@ -967,6 +1035,229 @@ namespace Kurinnoy.DataBase_Logic
 						this._projectID = default(int);
 					}
 					this.SendPropertyChanged("Projects");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.RealTimeJobOffers")]
+	public partial class RealTimeJobOffers : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _Id;
+		
+		private int _CoWorkerId;
+		
+		private string _ProjectInfo;
+		
+		private int _Price;
+		
+		private int _WorkerQuantity;
+		
+		private string _ClientContacts;
+		
+		private EntityRef<CoWorkers> _CoWorkers;
+		
+    #region Определения метода расширяемости
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
+    partial void OnCoWorkerIdChanging(int value);
+    partial void OnCoWorkerIdChanged();
+    partial void OnProjectInfoChanging(string value);
+    partial void OnProjectInfoChanged();
+    partial void OnPriceChanging(int value);
+    partial void OnPriceChanged();
+    partial void OnWorkerQuantityChanging(int value);
+    partial void OnWorkerQuantityChanged();
+    partial void OnClientContactsChanging(string value);
+    partial void OnClientContactsChanged();
+    #endregion
+		
+		public RealTimeJobOffers()
+		{
+			this._CoWorkers = default(EntityRef<CoWorkers>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CoWorkerId", DbType="Int NOT NULL")]
+		public int CoWorkerId
+		{
+			get
+			{
+				return this._CoWorkerId;
+			}
+			set
+			{
+				if ((this._CoWorkerId != value))
+				{
+					if (this._CoWorkers.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnCoWorkerIdChanging(value);
+					this.SendPropertyChanging();
+					this._CoWorkerId = value;
+					this.SendPropertyChanged("CoWorkerId");
+					this.OnCoWorkerIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ProjectInfo", DbType="NVarChar(500) NOT NULL", CanBeNull=false)]
+		public string ProjectInfo
+		{
+			get
+			{
+				return this._ProjectInfo;
+			}
+			set
+			{
+				if ((this._ProjectInfo != value))
+				{
+					this.OnProjectInfoChanging(value);
+					this.SendPropertyChanging();
+					this._ProjectInfo = value;
+					this.SendPropertyChanged("ProjectInfo");
+					this.OnProjectInfoChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Price", DbType="Int NOT NULL")]
+		public int Price
+		{
+			get
+			{
+				return this._Price;
+			}
+			set
+			{
+				if ((this._Price != value))
+				{
+					this.OnPriceChanging(value);
+					this.SendPropertyChanging();
+					this._Price = value;
+					this.SendPropertyChanged("Price");
+					this.OnPriceChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WorkerQuantity", DbType="Int NOT NULL")]
+		public int WorkerQuantity
+		{
+			get
+			{
+				return this._WorkerQuantity;
+			}
+			set
+			{
+				if ((this._WorkerQuantity != value))
+				{
+					this.OnWorkerQuantityChanging(value);
+					this.SendPropertyChanging();
+					this._WorkerQuantity = value;
+					this.SendPropertyChanged("WorkerQuantity");
+					this.OnWorkerQuantityChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ClientContacts", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		public string ClientContacts
+		{
+			get
+			{
+				return this._ClientContacts;
+			}
+			set
+			{
+				if ((this._ClientContacts != value))
+				{
+					this.OnClientContactsChanging(value);
+					this.SendPropertyChanging();
+					this._ClientContacts = value;
+					this.SendPropertyChanged("ClientContacts");
+					this.OnClientContactsChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CoWorkers_RealTimeJobOffers", Storage="_CoWorkers", ThisKey="CoWorkerId", OtherKey="Id", IsForeignKey=true)]
+		public CoWorkers CoWorkers
+		{
+			get
+			{
+				return this._CoWorkers.Entity;
+			}
+			set
+			{
+				CoWorkers previousValue = this._CoWorkers.Entity;
+				if (((previousValue != value) 
+							|| (this._CoWorkers.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._CoWorkers.Entity = null;
+						previousValue.RealTimeJobOffers.Remove(this);
+					}
+					this._CoWorkers.Entity = value;
+					if ((value != null))
+					{
+						value.RealTimeJobOffers.Add(this);
+						this._CoWorkerId = value.Id;
+					}
+					else
+					{
+						this._CoWorkerId = default(int);
+					}
+					this.SendPropertyChanged("CoWorkers");
 				}
 			}
 		}

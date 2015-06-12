@@ -19,10 +19,16 @@ namespace Kurinnoy
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             RouteTable.Routes.MapHttpRoute(
+                name: "CoWorkersApi",
+                routeTemplate: "api/{controller}/{projectContainer}"
+                );
+
+            RouteTable.Routes.MapHttpRoute(
                 name: "CategoriesApi",
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = System.Web.Http.RouteParameter.Optional }
                 );
+
         }   
     }
 }

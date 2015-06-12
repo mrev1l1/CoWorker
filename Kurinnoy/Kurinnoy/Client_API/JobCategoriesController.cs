@@ -33,9 +33,11 @@ namespace Kurinnoy.Client_API
             return Result;
         }
 
-        //// GET api/<controller>/5
-        //public string Get(int id)
+        // GET api/<controller>/5
+        //[ActionName("GetCoWorkers")]
+        //public string Get(String projectContainer)
         //{
+        //    String[] ProjectParameters = projectContainer.Split(new String[]{";"}, StringSplitOptions.RemoveEmptyEntries);
         //    return "value";
         //}
 

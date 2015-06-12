@@ -17,6 +17,7 @@
       <Column Name="additionalInfo" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
       <Association Name="CoWorkers_CoWorkerSpecializations" Member="CoWorkerSpecializations" ThisKey="Id" OtherKey="coWorkerID" Type="CoWorkerSpecializations" />
       <Association Name="CoWorkers_ActiveProjects" Member="ActiveProjects" ThisKey="Id" OtherKey="coWorkerID" Type="ActiveProjects" />
+      <Association Name="CoWorkers_RealTimeJobOffers" Member="RealTimeJobOffers" ThisKey="Id" OtherKey="CoWorkerId" Type="RealTimeJobOffers" />
     </Type>
   </Table>
   <Table Name="dbo.CoWorkerSpecializations" Member="CoWorkerSpecializations">
@@ -43,6 +44,17 @@
       <Column Name="readiness" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Association Name="CoWorkers_ActiveProjects" Member="CoWorkers" ThisKey="coWorkerID" OtherKey="Id" Type="CoWorkers" IsForeignKey="true" />
       <Association Name="Projects_ActiveProjects" Member="Projects" ThisKey="projectID" OtherKey="Id" Type="Projects" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.RealTimeJobOffers" Member="RealTimeJobOffers">
+    <Type Name="RealTimeJobOffers">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="CoWorkerId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ProjectInfo" Type="System.String" DbType="NVarChar(500) NOT NULL" CanBeNull="false" />
+      <Column Name="Price" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="WorkerQuantity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ClientContacts" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="CoWorkers_RealTimeJobOffers" Member="CoWorkers" ThisKey="CoWorkerId" OtherKey="Id" Type="CoWorkers" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

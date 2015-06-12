@@ -13,6 +13,7 @@ using System.Data;
 using System.Web.UI;
 using Kurinnoy.DataBase_Logic;
 using System.Configuration;
+using System.IO;
 
 namespace Kurinnoy.Account
 {
@@ -71,6 +72,8 @@ namespace Kurinnoy.Account
         {
             JobCategoriesSource.SelectParameters.Add("email", Context.User.Identity.GetUserName());
 
+            ShowOfferModal(Context.User.Identity.GetUserName());
+
             var manager = Context.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
             HasPhoneNumber = String.IsNullOrEmpty(manager.GetPhoneNumber(User.Identity.GetUserId()));
@@ -116,6 +119,30 @@ namespace Kurinnoy.Account
             }
         }
 
+        void ShowOfferModal(String email)
+        {
+            CoWorkerStaffHandlersDataContext DbContext = new CoWorkerStaffHandlersDataContext(ConfigurationManager.ConnectionStrings["CoWorkerStaffConnectionString"].ConnectionString);
+
+            var CurrentWorker = DbContext.CoWorkers.Where(Worker => Worker.email.Equals(email)).First();
+
+            if(DbContext.RealTimeJobOffers.Where(Offer => Offer.CoWorkerId.Equals(CurrentWorker.Id)).Any())
+            {
+                jobOfferModal.Visible = true;
+            }
+
+            try
+            {
+                var NewOffer = DbContext.RealTimeJobOffers.Where(JobOffer => JobOffer.CoWorkerId.Equals(CurrentWorker.Id)).First();
+                desciptionLabel.InnerText = NewOffer.ProjectInfo;
+                priceLabel.InnerText = '$' + NewOffer.Price.ToString();
+                workerNumberLabel.InnerText = NewOffer.WorkerQuantity.ToString() + " people";
+            }
+            catch (System.InvalidOperationException ex)
+            {
+                return;
+            };
+            
+        }
 
         private void AddErrors(IdentityResult result)
         {
@@ -124,6 +151,8 @@ namespace Kurinnoy.Account
                 ModelState.AddModelError("", error);
             }
         }
+
+
 
         // Удаление номера телефона пользователя
         protected void RemovePhone_Click(object sender, EventArgs e)
@@ -159,6 +188,72 @@ namespace Kurinnoy.Account
             manager.SetTwoFactorEnabled(User.Identity.GetUserId(), true);
 
             Response.Redirect("/Account/Manage");
+        }
+
+        protected void acceptButton_Click(object sender, EventArgs e)
+        {
+            CoWorkerStaffHandlersDataContext DbContext = new CoWorkerStaffHandlersDataContext(ConfigurationManager.ConnectionStrings["CoWorkerStaffConnectionString"].ConnectionString);
+
+            var CurrentWorker = DbContext.CoWorkers.Where(W => W.email.Equals(Context.User.Identity.GetUserName())).First();
+
+            var NewProject = DbContext.RealTimeJobOffers.Where(Offer => Offer.CoWorkerId.Equals(CurrentWorker.Id)).First();
+
+            Projects Project = new Projects();
+            Project.price = NewProject.Price;
+            Project.projectInfoFolderPath = "";
+
+            DbContext.Projects.InsertOnSubmit(Project);
+            DbContext.SubmitChanges();
+
+            int NewId=1;
+            var IdFinder = DbContext.Projects;
+
+            foreach(Projects Item in IdFinder)
+            {
+                NewId = NewId < Item.Id ? Item.Id : NewId;
+            }
+
+            String Path = Server.MapPath("~/App_Data/");
+            Directory.CreateDirectory(Path+"project+"+NewId.ToString());
+
+            Project.projectInfoFolderPath = Path + "project" + NewId.ToString();
+
+            ActiveProjects NewActiveProject = new ActiveProjects();
+
+            NewActiveProject.coWorkerID = CurrentWorker.Id;
+            NewActiveProject.projectID = NewId;
+            NewActiveProject.readiness = 0;
+
+            DbContext.ActiveProjects.InsertOnSubmit(NewActiveProject);
+
+            System.IO.File.WriteAllText(Path + "project" + NewId.ToString() + "\\" + NewId.ToString() + ".txt", NewProject.ProjectInfo + "\n Price:" + NewProject.Price);
+
+            answerLabel.InnerText = "Clients Contacts: " + NewProject.ClientContacts;
+
+            NewProject.WorkerQuantity--;
+            if (NewProject.WorkerQuantity > 0)
+                DbContext.GetChangeSet();
+            else DbContext.RealTimeJobOffers.DeleteOnSubmit(NewProject);
+
+
+            DbContext.SubmitChanges();
+
+            DbContext.Connection.Close();
+
+        }
+
+        protected void declineButton_Click(object sender, EventArgs e)
+        {
+            CoWorkerStaffHandlersDataContext DbContext = new CoWorkerStaffHandlersDataContext(ConfigurationManager.ConnectionStrings["CoWorkerStaffConnectionString"].ConnectionString);
+
+            var CurrentCoWorker = DbContext.CoWorkers.Where(Worker => Worker.email.Equals(Context.User.Identity.GetUserName())).First();
+
+            var Offers = DbContext.RealTimeJobOffers.Where(JobOffer => JobOffer.CoWorkerId.Equals(CurrentCoWorker.Id)).First();
+
+            DbContext.RealTimeJobOffers.DeleteOnSubmit(Offers);
+
+            DbContext.SubmitChanges();
+            DbContext.Connection.Close();
         }
     }
 }

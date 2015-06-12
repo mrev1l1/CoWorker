@@ -33,31 +33,44 @@
         <classShapeMoniker Id="7388ee80-e0e2-4280-b415-e779721ecaed" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 6.84699625651042); (4.21875 : 6.84699625651042); (4.21875 : 2.1362939453125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.75 : 6.84699625651042); (4.09375 : 6.84699625651042); (4.09375 : 2.1362939453125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/CoWorkerStaffHandlersDataContext/JobCategories/JobCategories_CoWorkerSpecializations" />
       <nodes>
         <classShapeMoniker Id="50ff6a63-622e-4f5b-bba1-71df2d107ec5" />
         <classShapeMoniker Id="7388ee80-e0e2-4280-b415-e779721ecaed" />
       </nodes>
     </associationConnector>
-    <classShape Id="a1ebf955-3b2c-42b0-ab2b-3d1600b99eb2" absoluteBounds="5, 4.25, 2, 1.5785953776041666">
+    <classShape Id="a1ebf955-3b2c-42b0-ab2b-3d1600b99eb2" absoluteBounds="5, 4.5, 2, 1.5785953776041666">
       <DataClassMoniker Name="/CoWorkerStaffHandlersDataContext/ActiveProjects" />
       <nestedChildShapes>
-        <elementListCompartment Id="8b97307a-06b0-4102-b61b-be06002ef92a" absoluteBounds="5.015, 4.71, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="8b97307a-06b0-4102-b61b-be06002ef92a" absoluteBounds="5.015, 4.96, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(2.75 : 4.76044840494792); (4.13541666666667 : 4.76044840494792 : JumpStart); (4.30208333333333 : 4.76044840494792 : JumpEnd); (5 : 4.76044840494792)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.75 : 4.88544840494792); (4.01041666666667 : 4.88544840494792 : JumpStart); (4.17708333333333 : 4.88544840494792 : JumpEnd); (5 : 4.88544840494792)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/CoWorkerStaffHandlersDataContext/CoWorkers/CoWorkers_ActiveProjects" />
       <nodes>
         <classShapeMoniker Id="1e33b408-8ba2-4ac2-9c03-59182be011f0" />
         <classShapeMoniker Id="a1ebf955-3b2c-42b0-ab2b-3d1600b99eb2" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 9.44314697265625); (6 : 9.44314697265625); (6 : 5.82859537760417)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.75 : 9.44314697265625); (6 : 9.44314697265625); (6 : 6.07859537760417)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/CoWorkerStaffHandlersDataContext/Projects/Projects_ActiveProjects" />
       <nodes>
         <classShapeMoniker Id="0c9642a1-4cca-4307-81d9-c283a0f0525d" />
         <classShapeMoniker Id="a1ebf955-3b2c-42b0-ab2b-3d1600b99eb2" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="2a54fe59-267f-4fc6-af9f-12030908fc24" absoluteBounds="4.75, 2.25, 2, 1.9631982421875">
+      <DataClassMoniker Name="/CoWorkerStaffHandlersDataContext/RealTimeJobOffers" />
+      <nestedChildShapes>
+        <elementListCompartment Id="ce2c2fbb-b089-482c-a744-0a16e6e14131" absoluteBounds="4.765, 2.71, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(2.75 : 3.85659912109375); (4.01041666666667 : 3.85659912109375 : JumpStart); (4.17708333333333 : 3.85659912109375 : JumpEnd); (4.75 : 3.85659912109375)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/CoWorkerStaffHandlersDataContext/CoWorkers/CoWorkers_RealTimeJobOffers" />
+      <nodes>
+        <classShapeMoniker Id="1e33b408-8ba2-4ac2-9c03-59182be011f0" />
+        <classShapeMoniker Id="2a54fe59-267f-4fc6-af9f-12030908fc24" />
       </nodes>
     </associationConnector>
   </nestedChildShapes>
