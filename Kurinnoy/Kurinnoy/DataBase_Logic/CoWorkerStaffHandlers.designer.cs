@@ -130,6 +130,8 @@ namespace Kurinnoy.DataBase_Logic
 
         public void FindCoWorkersForProjectByCategory(int category, int workersQuantity, int price, String additionalInfo, String clientContacts)
         {
+            
+            
             var PotentialWorkers = this.CoWorkerSpecializations.Where(Coworkers => Coworkers.categoryID.Equals(category));
 
             Int32 WorkerNeed = workersQuantity;
